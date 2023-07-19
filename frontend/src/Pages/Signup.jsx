@@ -17,7 +17,33 @@ import {
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 
 const Signup = () => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
+  const handleSignup = () => {
+    const payload = {
+      name,
+      email,
+      password,
+    };
+    //connecting FE to BE
+    fetch("https://thoughtful-cyan-chimpanzee.cyclic.app/users/register", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    })
+      .then((res) => res.json())
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
+    setName("");
+    setEmail("");
+    setPassword("");
+  };
+
   return (
     <Flex
       minH={"100vh"}
@@ -43,16 +69,31 @@ const Signup = () => {
           <Stack spacing={4}>
             <FormControl id="firstName" isRequired>
               <FormLabel>Full Name</FormLabel>
-              <Input type="text" />
+              <Input
+                type="text"
+                name="username"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
             </FormControl>
             <FormControl id="email" isRequired>
               <FormLabel>Email address</FormLabel>
-              <Input type="email" />
+              <Input
+                type="email"
+                name="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </FormControl>
             <FormControl id="password" isRequired>
               <FormLabel>Password</FormLabel>
               <InputGroup>
-                <Input type={showPassword ? "text" : "password"} />
+                <Input
+                  name="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  type={showPassword ? "text" : "password"}
+                />
                 <InputRightElement h={"full"}>
                   <Button
                     variant={"ghost"}
@@ -74,6 +115,7 @@ const Signup = () => {
                 _hover={{
                   bg: "blue.500",
                 }}
+                onClick={handleSignup}
               >
                 Sign up
               </Button>

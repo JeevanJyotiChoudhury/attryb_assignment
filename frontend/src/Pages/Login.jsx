@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Flex,
   Box,
@@ -14,6 +14,32 @@ import {
 } from "@chakra-ui/react";
 
 const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = () => {
+    const payload = {
+      email,
+      password,
+    };
+    //connecting FE to BE
+    fetch("https://thoughtful-cyan-chimpanzee.cyclic.app/users/login", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res);
+        localStorage.setItem("token", res.token);
+      })
+      .catch((err) => console.log(err));
+    setEmail("");
+    setPassword("");
+  };
+
   return (
     <Flex
       minH={"100vh"}
@@ -37,11 +63,21 @@ const Login = () => {
           <Stack spacing={4}>
             <FormControl id="email">
               <FormLabel>Email address</FormLabel>
-              <Input type="email" />
+              <Input
+                type="email"
+                name="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </FormControl>
             <FormControl id="password">
               <FormLabel>Password</FormLabel>
-              <Input type="password" />
+              <Input
+                type="password"
+                name="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
             </FormControl>
             <Stack spacing={10}>
               <Stack
@@ -52,16 +88,18 @@ const Login = () => {
               <Button
                 bg={"blue.400"}
                 color={"white"}
+                onClick={handleLogin}
                 _hover={{
                   bg: "blue.500",
                 }}
               >
-                Sign in
+                Log In
               </Button>
             </Stack>
             <Stack pt={6}>
               <Text align={"center"}>
-                New to the website? Please <Link color={"blue.400"}>Sign Up</Link>
+                New to the website? Please{" "}
+                <Link color={"blue.400"}>Sign Up</Link>
               </Text>
             </Stack>
           </Stack>
