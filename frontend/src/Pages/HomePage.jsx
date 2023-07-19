@@ -8,8 +8,11 @@ import {
   Text,
   useBreakpointValue,
 } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
 
 const HomePage = () => {
+  let token = localStorage.getItem("token") || null;
+  // console.log(token)
   return (
     <Stack minH={"100vh"} direction={{ base: "column", md: "row" }}>
       <Flex p={8} flex={1} align={"center"} justify={"center"}>
@@ -37,20 +40,23 @@ const HomePage = () => {
             </Text>{" "}
           </Heading>
           <Text fontSize={{ base: "md", lg: "lg" }} color={"gray.500"}>
-            This website is to help you choose the correct second hand car according
-            to everyone's needs and requirements.
+            This website is to help you choose the correct second hand car
+            according to everyone's needs and requirements.
           </Text>
-          <Stack direction={{ base: "column", md: "row" }} spacing={4}>
-            <Button
-              rounded={"full"}
-              bg={"blue.400"}
-              color={"white"}
-              _hover={{
-                bg: "blue.500",
-              }}
-            >
-              Get Started
-            </Button>
+          <Stack direction={{ base: "column", md: "column" }} spacing={4}>
+            <center>
+              <Button
+                rounded={"full"}
+                bg={"blue.400"}
+                color={"white"}
+                _hover={{
+                  bg: "blue.500",
+                }}
+                w={"40%"}
+              >
+                <Link to={!token ? "/signup" : "/login"}>Get Started</Link>
+              </Button>
+            </center>
           </Stack>
         </Stack>
       </Flex>

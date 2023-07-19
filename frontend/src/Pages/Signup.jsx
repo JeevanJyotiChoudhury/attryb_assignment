@@ -12,15 +12,18 @@ import {
   Heading,
   Text,
   useColorModeValue,
-  Link,
+  useToast,
 } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+import { useNavigate, Link } from "react-router-dom";
 
 const Signup = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const toast = useToast();
+  const navigate = useNavigate();
 
   const handleSignup = () => {
     const payload = {
@@ -28,7 +31,6 @@ const Signup = () => {
       email,
       password,
     };
-    //connecting FE to BE
     fetch("https://thoughtful-cyan-chimpanzee.cyclic.app/users/register", {
       method: "POST",
       headers: {
@@ -37,11 +39,28 @@ const Signup = () => {
       body: JSON.stringify(payload),
     })
       .then((res) => res.json())
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
+      .then((res) =>
+        toast({
+          title: "Registration successful.",
+          description: "Login to continue.",
+          status: "success",
+          duration: 2000,
+          isClosable: true,
+        })
+      )
+      .catch((err) =>
+        toast({
+          title: "Registration failed.",
+          description: "Please try again.",
+          status: "error",
+          duration: 2000,
+          isClosable: true,
+        })
+      );
     setName("");
     setEmail("");
     setPassword("");
+    navigate("/login");
   };
 
   return (
@@ -122,7 +141,7 @@ const Signup = () => {
             </Stack>
             <Stack pt={6}>
               <Text align={"center"}>
-                Already a user? <Link color={"blue.400"}>Login</Link>
+                Already a user? <Link to="/login">Login</Link>
               </Text>
             </Stack>
           </Stack>

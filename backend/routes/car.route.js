@@ -21,7 +21,19 @@ carRouter.post("/addcar", async (req, res) => {
 //get all the cars
 carRouter.get("/", async (req, res) => {
   try {
-    const getAllCars = await CarModel.find();
+    const { color, order } = req.query;
+    let filter = {};
+
+    if (color) {
+      filter.color = color;
+    }
+     const sorting = {};
+     if (order === "asc") {
+       sorting.price = 1;
+     } else if (order === "desc") {
+       sorting.price = -1;
+     }
+    const getAllCars = await CarModel.find({ ...filter }).sort(sorting);
     res.status(200).json(getAllCars);
   } catch (err) {
     res.status(400).json({ Error: "Failed to get the cars" });

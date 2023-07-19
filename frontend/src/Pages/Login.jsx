@@ -6,23 +6,25 @@ import {
   FormLabel,
   Input,
   Stack,
-  Link,
   Button,
   Heading,
   Text,
   useColorModeValue,
+  useToast,
 } from "@chakra-ui/react";
+import { useNavigate, Link } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const toast = useToast();
+  const navigate = useNavigate();
 
   const handleLogin = () => {
     const payload = {
       email,
       password,
     };
-    //connecting FE to BE
     fetch("https://thoughtful-cyan-chimpanzee.cyclic.app/users/login", {
       method: "POST",
       headers: {
@@ -30,15 +32,44 @@ const Login = () => {
       },
       body: JSON.stringify(payload),
     })
-      .then((res) => res.json())
       .then((res) => {
+        console.log(res,"res")
+        if (!res.ok) {
+          throw new Error("Invalid credentials");
+        }
+        return res.json();
+      })
+      .then((res) => {
+        console.log(res,"myres")
+        if (!res.token) {
+          throw new Error("Token not received");
+        }
         console.log(res);
         localStorage.setItem("token", res.token);
+        toast({
+          title: "Login successful.",
+          status: "success",
+          position: "top-center",
+          duration: 2000,
+          isClosable: true,
+        });
+        navigate("/allcars");
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        toast({
+          title: "Login Failed.",
+          description: "Please try again.",
+          position: "top-center",
+          status: "error",
+          duration: 2000,
+          isClosable: true,
+        });
+      });
     setEmail("");
     setPassword("");
   };
+
 
   return (
     <Flex
@@ -99,7 +130,9 @@ const Login = () => {
             <Stack pt={6}>
               <Text align={"center"}>
                 New to the website? Please{" "}
-                <Link color={"blue.400"}>Sign Up</Link>
+                <Link to="/signup">
+                  Sign Up
+                </Link>
               </Text>
             </Stack>
           </Stack>
