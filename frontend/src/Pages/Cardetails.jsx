@@ -18,6 +18,7 @@ import {
   ModalHeader,
   ModalBody,
   ModalCloseButton,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import EditCarForm from "../Components/EditCarForm";
@@ -28,6 +29,7 @@ const Cardetails = ({ cars, setCars }) => {
   const [sortData, setSortData] = useState(cars);
   const toast = useToast();
   const [selectedCar, setSelectedCar] = useState(null);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleEdit = (car) => {
     setSelectedCar(car);
