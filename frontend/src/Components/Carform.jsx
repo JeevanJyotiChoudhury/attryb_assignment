@@ -12,12 +12,14 @@ import {
   Select,
   useToast,
 } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 
 const Carform = ({ cars, setCars }) => {
   const [form, setForm] = useState({});
   const toast = useToast();
   const token = localStorage.getItem("token");
   console.log(token, "token");
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     let { name, value } = e.target;
@@ -51,6 +53,7 @@ const Carform = ({ cars, setCars }) => {
           duration: 2000,
           isClosable: true,
         });
+navigate("/allcars");
       } catch (e) {
         console.log(e,"error");
       }

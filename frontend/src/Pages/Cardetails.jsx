@@ -12,14 +12,38 @@ import {
   Select,
   Text,
   useToast,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalCloseButton,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
+import EditCarForm from "../Components/EditCarForm";
 
 const Cardetails = ({ cars, setCars }) => {
   const [isLoading, setIsLoading] = useState(true);
   const token = localStorage.getItem("token");
   const [sortData, setSortData] = useState(cars);
   const toast = useToast();
+  const [selectedCar, setSelectedCar] = useState(null);
+
+  const handleEdit = (car) => {
+    setSelectedCar(car);
+    onOpen();
+  };
+  const handleUpdate = (updatedCar) => {
+    const updatedCarIndex = cars.findIndex((car) => car._id === updatedCar._id);
+    if (updatedCarIndex !== -1) {
+      setCars((prevCars) => [
+        ...prevCars.slice(0, updatedCarIndex),
+        updatedCar,
+        ...prevCars.slice(updatedCarIndex + 1),
+      ]);
+    }
+    onClose();
+  };
 
   function getTask() {
     if (token) {
@@ -159,10 +183,29 @@ const Cardetails = ({ cars, setCars }) => {
                 >
                   Delete
                 </Button>
+                <Button
+                  colorScheme="teal"
+                  mt={2}
+                  onClick={() => handleEdit(el._id)}
+                >
+                  Edit
+                </Button>
               </Box>
             );
           })}
       </Grid>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Edit Car Details</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            {selectedCar && (
+              <EditCarForm car={selectedCar} onUpdate={handleUpdate} />
+            )}
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     </>
   );
 };
